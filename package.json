@@ -37,7 +37,7 @@
     "onStartupFinished"
   ],
   "contributes": {
-    "commands": [],
+    "commands": [{ "command": "llm-compelete-me", "title": "LLM Compelete Me" }],
     "configuration": {
       "type": "object",
       "title": "ext-name",
