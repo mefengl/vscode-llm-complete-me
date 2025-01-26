@@ -1,24 +1,24 @@
 {
-  "publisher": "antfu",
-  "name": "ext-name",
-  "displayName": "ext-name",
+  "publisher": "mefengl",
+  "name": "llm-compelete-me",
+  "displayName": "LLM Compelete Me",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@9.7.1",
   "description": "",
-  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "author": "mefengl",
   "license": "MIT",
-  "funding": "https://github.com/sponsors/antfu",
-  "homepage": "https://github.com/antfu/ext-name#readme",
+  "funding": "https://github.com/sponsors/mefengl",
+  "homepage": "https://github.com/mefengl/vscode-llm-compelete-me#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/antfu/ext-name"
+    "url": "https://github.com/mefengl/vscode-llm-compelete-me"
   },
   "bugs": {
-    "url": "https://github.com/antfu/ext-name/issues"
+    "url": "https://github.com/mefengl/vscode-llm-compelete-me/issues"
   },
   "sponsor": {
-    "url": "https://github.com/sponsors/antfu"
+    "url": "https://github.com/sponsors/mefengl"
   },
   "categories": [
     "Other"
