@@ -9,9 +9,8 @@ const { activate, deactivate } = defineExtension(() => useCommand('llm-compelete
   const context = getContext(activeTextEditor)
   if (!context)
     vscode.window.showInformationMessage('No text available')
-  // Insert new line before and after the response
   await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
-  await giveMeAnswer(activeTextEditor, context)
+  vscode.window.withProgress({ title: 'Compeleting...', location: vscode.ProgressLocation.Notification }, async () => await giveMeAnswer(activeTextEditor, context))
   await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
 }))
 
