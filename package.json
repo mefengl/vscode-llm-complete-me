@@ -37,12 +37,52 @@
     "onStartupFinished"
   ],
   "contributes": {
-    "commands": [{ "command": "llm-compelete-me.please", "title": "LLM Compelete Me Please" }],
-    "keybindings": [{ "command": "llm-compelete-me.please", "key": "ctrl+enter", "mac": "cmd+enter", "when": "editorTextFocus && !editorReadonly" }],
+    "commands": [
+      {
+        "command": "llm-compelete-me.please",
+        "title": "LLM Compelete Me Please"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "llm-compelete-me.please",
+        "key": "ctrl+enter",
+        "mac": "cmd+enter",
+        "when": "editorTextFocus && !editorReadonly"
+      }
+    ],
     "configuration": {
-      "type": "object",
-      "title": "ext-name",
-      "properties": {}
+      "properties": {
+        "llm-compelete-me.baseURL": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "https://api.openai.com/v1",
+          "description": "LLM Provider Base URL (OpenAI Comppatible)"
+        },
+        "llm-compelete-me.apiKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "",
+          "description": "LLM Provider API Key"
+        },
+        "llm-compelete-me.model": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "o1-mini",
+          "description": "Model to be used"
+        },
+        "llm-compelete-me.useCopilot": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use github copilot, recommend when having copilot pro subscription"
+        }
+      }
     }
   },
   "scripts": {
@@ -57,6 +97,9 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "release": "bumpp && nr publish"
+  },
+  "dependencies": {
+    "ofetch": "^1.4.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.26.0",
