@@ -1,3 +1,4 @@
+<!-- DO NOT REMOVE - contributor_list:data:start:["mefengl"]:end -->
 # LLM Complete Me
 
 <a href="https://marketplace.visualstudio.com/items?itemName=mefengl.llm-compelete-me" target="__blank"><img src="https://img.shields.io/visual-studio-marketplace/v/mefengl.llm-compelete-me.svg?color=eee&amp;label=VS%20Code%20Marketplace&logo=visual-studio-code" alt="Visual Studio Marketplace Version" /></a>
@@ -30,3 +31,13 @@
 ## License
 
 [MIT](./LICENSE)
+
+<!-- prettier-ignore-start -->
+<!-- DO NOT REMOVE - contributor_list:start -->
+## 👥 Contributors
+
+
+- **[@mefengl](https://github.com/mefengl)**
+
+<!-- DO NOT REMOVE - contributor_list:end -->
+<!-- prettier-ignore-end -->
