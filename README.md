@@ -11,7 +11,9 @@
 ## Commands
 
 <!-- commands -->
-<!-- empty -->
+| Command                   | Title                   |
+| ------------------------- | ----------------------- |
+| `llm-compelete-me.please` | LLM Compelete Me Please |
 <!-- commands -->
 
 ## License
