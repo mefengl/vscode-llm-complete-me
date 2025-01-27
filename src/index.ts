@@ -2,14 +2,17 @@ import { defineExtension, useCommand } from 'reactive-vscode'
 import vscode from 'vscode'
 import { logger } from './utils'
 
-const { activate, deactivate } = defineExtension(() => useCommand('llm-compelete-me.please', () => {
+const { activate, deactivate } = defineExtension(() => useCommand('llm-compelete-me.please', async () => {
   const activeTextEditor = vscode.window.activeTextEditor
   if (!activeTextEditor)
     return vscode.window.showInformationMessage('No active text editor')
   const context = getContext(activeTextEditor)
   if (!context)
     vscode.window.showInformationMessage('No text available')
-  giveMeAnswer(activeTextEditor, context)
+  // Insert new line before and after the response
+  await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
+  await giveMeAnswer(activeTextEditor, context)
+  await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
 }))
 
 export { activate, deactivate }
@@ -42,8 +45,6 @@ async function giveMeAnswer(textEditor: vscode.TextEditor, q: string) {
     vscode.window.showInformationMessage('No response from the language model')
     return
   }
-  // Insert new line before and after the response
-  await textEditor.edit(edit => edit.insert(textEditor.selection.active, '\n'))
   try {
     // Stream the code into the editor as it is coming in from the Language Model
     for await (const fragment of chatResponse.text)
@@ -53,5 +54,4 @@ async function giveMeAnswer(textEditor: vscode.TextEditor, q: string) {
     // async response stream may fail, e.g network interruption or server side error
     await textEditor.edit(edit => edit.insert(textEditor.selection.active, (<Error>err).message))
   }
-  await textEditor.edit(edit => edit.insert(textEditor.selection.active, '\n'))
 }
