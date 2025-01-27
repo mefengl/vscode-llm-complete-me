@@ -21,8 +21,12 @@
 | `llm-compelete-me.please` | LLM Compelete Me Please |
 <!-- commands -->
 
+## Credits
+
+- [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe): For the lovely way of naming
+- [starter-vscode](https://github.com/antfu/starter-vscode): Built on this helpful template
+  > Licensed under the [MIT License](https://github.com/antfu/starter-vscode/blob/f97726ca995afa899da954fe74fc9ea5df618fd9/LICENSE.md)
+
 ## License
 
 [MIT](./LICENSE)
-
-Template: [MIT](./TEMPLATE_LICENSE) License © 2022 [Anthony Fu](https://github.com/antfu)
