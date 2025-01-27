@@ -88,7 +88,7 @@
         "llm-compelete-me.useCopilot": {
           "type": "boolean",
           "default": false,
-          "description": "Use github copilot, recommend when having copilot pro subscription"
+          "description": "Use github copilot, recommend when having copilot subscription"
         }
       }
     }
