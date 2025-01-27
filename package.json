@@ -96,7 +96,7 @@
     "pack": "vsce package --no-dependencies",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "release": "bumpp && nr publish"
+    "release": "bumpp -y && nr publish"
   },
   "dependencies": {
     "ofetch": "^1.4.1"
