@@ -19,7 +19,7 @@ const { activate, deactivate } = defineExtension(() => useCommand('llm-compelete
       if (!apiKey)
         return vscode.window.showInformationMessage('No API key provided')
       config.apiKey = apiKey
-      const model = await vscode.window.showInputBox({ prompt: 'Enter the model of the language model', value: config.model ?? undefined })
+      const model = await vscode.window.showInputBox({ prompt: 'Enter the model of the language model', value: config.model ?? undefined, password: true })
       if (!model)
         return vscode.window.showInformationMessage('No model provided')
       config.model = model
