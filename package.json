@@ -5,7 +5,7 @@
   "version": "0.3.2",
   "private": true,
   "packageManager": "pnpm@9.7.1",
-  "description": "",
+  "description": "`cmd+enter` and here you go ",
   "author": "mefengl",
   "license": "MIT",
   "funding": "https://github.com/sponsors/mefengl",
