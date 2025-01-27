@@ -37,7 +37,8 @@
     "onStartupFinished"
   ],
   "contributes": {
-    "commands": [{ "command": "llm-compelete-me", "title": "LLM Compelete Me" }],
+    "commands": [{ "command": "llm-compelete-me.please", "title": "LLM Compelete Me Please" }],
+    "keybindings": [{ "command": "llm-compelete-me.please", "key": "ctrl+enter", "mac": "cmd+enter", "when": "editorTextFocus && !editorReadonly" }],
     "configuration": {
       "type": "object",
       "title": "ext-name",
