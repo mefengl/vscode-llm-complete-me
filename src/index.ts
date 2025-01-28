@@ -3,9 +3,9 @@ import vscode from 'vscode'
 import { ofetch } from 'ofetch'
 import { logger } from './utils'
 
-const config = defineConfigObject('llm-compelete-me', { useCopilot: Boolean, baseURL: [String, null], apiKey: [String, null], model: [String, null] })
+const config = defineConfigObject('llm-complete-me', { useCopilot: Boolean, baseURL: [String, null], apiKey: [String, null], model: [String, null] })
 
-const { activate, deactivate } = defineExtension(() => useCommand('llm-compelete-me.please', async () => {
+const { activate, deactivate } = defineExtension(() => useCommand('llm-complete-me.please', async () => {
   if (!config.useCopilot && (!config.baseURL || !config.apiKey || !config.model)) {
     const baseURL = await vscode.window.showInputBox({ prompt: 'Enter the base URL of the language model, or enter "copilot" if you have copilot subscription', value: config.baseURL ?? undefined })
     if (!baseURL)
