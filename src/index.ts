@@ -34,9 +34,9 @@ const { activate, deactivate } = defineExtension(() => useCommand('llm-complete-
     vscode.window.showInformationMessage('No text available')
   await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
   if (config.useCopilot)
-    await vscode.window.withProgress({ title: 'Compeleting...', location: vscode.ProgressLocation.Notification }, async () => await giveMeAnswerCopilot(activeTextEditor, context))
+    await vscode.window.withProgress({ title: 'Completing...', location: vscode.ProgressLocation.Notification }, async () => await giveMeAnswerCopilot(activeTextEditor, context))
   else
-    await vscode.window.withProgress({ title: 'Compeleting...', location: vscode.ProgressLocation.Notification }, async () => await getAnswer(activeTextEditor, context))
+    await vscode.window.withProgress({ title: 'Completing...', location: vscode.ProgressLocation.Notification }, async () => await getAnswer(activeTextEditor, context))
   await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
 }))
 
