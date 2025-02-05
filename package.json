@@ -2,7 +2,7 @@
   "publisher": "mefengl",
   "name": "llm-complete-me",
   "displayName": "LLM Complete Me",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "private": true,
   "packageManager": "pnpm@9.7.1",
   "description": "`cmd+enter` and here you go ",
