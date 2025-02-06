@@ -1,6 +1,5 @@
 import { defineConfigObject, defineExtension, useCommand } from 'reactive-vscode'
 import vscode from 'vscode'
-import { ofetch } from 'ofetch'
 import { logger } from './utils'
 
 const config = defineConfigObject('llm-complete-me', { useCopilot: Boolean, baseURL: [String, null], apiKey: [String, null], model: [String, null] })
@@ -81,12 +80,13 @@ async function giveMeAnswerCopilot(textEditor: vscode.TextEditor, q: string) {
 
 async function getAnswer(textEditor: vscode.TextEditor, context: string) {
   try {
-    const res = await ofetch(`${config.baseURL}/chat/completions`, {
+    const res = await fetch(`${config.baseURL}/chat/completions`, {
       body: JSON.stringify({ messages: [{ content: context, role: 'user' }], model: config.model }),
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
       method: 'POST',
     })
-    const chatResponse = res?.choices?.[0]?.message
+    const data = await res.json()
+    const chatResponse = data?.choices?.[0]?.message
     if (!chatResponse)
       return vscode.window.showInformationMessage('No response from the language model')
     await textEditor.edit(edit => edit.insert(textEditor.selection.active, chatResponse.content))
