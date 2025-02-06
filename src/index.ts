@@ -85,11 +85,10 @@ async function getAnswer(textEditor: vscode.TextEditor, context: string) {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
       method: 'POST',
     })
-    const data = await res.json()
-    const chatResponse = data?.choices?.[0]?.message
-    if (!chatResponse)
+    const content = (await res.json() as any)?.choices?.[0]?.message?.content
+    if (!content)
       return vscode.window.showInformationMessage('No response from the language model')
-    await textEditor.edit(edit => edit.insert(textEditor.selection.active, chatResponse.content))
+    await textEditor.edit(edit => edit.insert(textEditor.selection.active, content))
   }
   catch (err) {
     return vscode.window.showInformationMessage((<Error>err).message)
