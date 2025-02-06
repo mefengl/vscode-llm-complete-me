@@ -111,7 +111,7 @@
     "@antfu/ni": "^0.22.4",
     "@types/node": "^22.4.1",
     "@types/vscode": "^1.92.0",
-    "@vscode/vsce": "^3.0.0",
+    "@vscode/vsce": "^3.2.2",
     "bumpp": "^9.5.1",
     "eslint": "^9.9.0",
     "esno": "^4.7.0",
