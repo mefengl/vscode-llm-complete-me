@@ -52,6 +52,7 @@ function getContext(textEditor: vscode.TextEditor) {
 
 // ref https://code.visualstudio.com/api/extension-guides/language-model#interpret-the-response
 async function giveMeAnswerCopilot(textEditor: vscode.TextEditor, q: string) {
+  const startPosition = textEditor.selection.active
   const [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: 'claude-3.5-sonnet' })
   let chatResponse: vscode.LanguageModelChatResponse | undefined
   const messages = [vscode.LanguageModelChatMessage.User(q)]
@@ -71,6 +72,10 @@ async function giveMeAnswerCopilot(textEditor: vscode.TextEditor, q: string) {
     // Stream the code into the editor as it is coming in from the Language Model
     for await (const fragment of chatResponse.text)
       await textEditor.edit(edit => edit.insert(textEditor.selection.active, fragment))
+
+    // Select the generated content
+    const endPosition = textEditor.selection.active
+    textEditor.selection = new vscode.Selection(startPosition, endPosition)
   }
   catch (err) {
     // async response stream may fail, e.g network interruption or server side error
@@ -79,6 +84,7 @@ async function giveMeAnswerCopilot(textEditor: vscode.TextEditor, q: string) {
 }
 
 async function getAnswer(textEditor: vscode.TextEditor, context: string) {
+  const startPosition = textEditor.selection.active
   try {
     const res = await fetch(`${config.baseURL}/chat/completions`, {
       body: JSON.stringify({ messages: [{ content: context, role: 'user' }], model: config.model }),
@@ -89,6 +95,10 @@ async function getAnswer(textEditor: vscode.TextEditor, context: string) {
     if (!content)
       return vscode.window.showInformationMessage('No response from the language model')
     await textEditor.edit(edit => edit.insert(textEditor.selection.active, content))
+
+    // Select the generated content
+    const endPosition = textEditor.selection.active
+    textEditor.selection = new vscode.Selection(startPosition, endPosition)
   }
   catch (err) {
     return vscode.window.showInformationMessage((<Error>err).message)
