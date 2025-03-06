@@ -53,7 +53,7 @@ function getContext(textEditor: vscode.TextEditor) {
 // ref https://code.visualstudio.com/api/extension-guides/language-model#interpret-the-response
 async function giveMeAnswerCopilot(textEditor: vscode.TextEditor, q: string) {
   const startPosition = textEditor.selection.active
-  const [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: 'claude-3.5-sonnet' })
+  const [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: 'claude-3.7-sonnet' })
   let chatResponse: vscode.LanguageModelChatResponse | undefined
   const messages = [vscode.LanguageModelChatMessage.User(q)]
   try {
