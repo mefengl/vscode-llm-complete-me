@@ -2,44 +2,63 @@ import { defineConfigObject, defineExtension, useCommand } from 'reactive-vscode
 import vscode from 'vscode'
 import { logger } from './utils'
 
-const config = defineConfigObject('llm-complete-me', { useCopilot: Boolean, baseURL: [String, null], apiKey: [String, null], model: [String, null] })
+const config = defineConfigObject('llm-complete-me', { useCopilot: Boolean, baseURL: [String, null], apiKey: [String, null], model: [String, null], selectedModel: [String, null] })
 
-const { activate, deactivate } = defineExtension(() => useCommand('llm-complete-me.please', async () => {
-  if (!config.useCopilot && (!config.baseURL || !config.apiKey || !config.model)) {
-    const baseURL = await vscode.window.showInputBox({ prompt: 'Enter the base URL of the language model, or enter "copilot" if you have copilot subscription', value: config.baseURL ?? undefined })
-    if (!baseURL)
-      return vscode.window.showInformationMessage('No base URL provided')
-    if (baseURL === 'copilot') {
-      config.useCopilot = true
+const { activate, deactivate } = defineExtension((): void => {
+  useCommand('llm-complete-me.please', async () => {
+    if (!config.useCopilot && (!config.baseURL || !config.apiKey || !config.model)) {
+      const baseURL = await vscode.window.showInputBox({ prompt: 'Enter the base URL of the language model, or enter "copilot" if you have copilot subscription', value: config.baseURL ?? undefined })
+      if (!baseURL)
+        return vscode.window.showInformationMessage('No base URL provided')
+      if (baseURL === 'copilot') {
+        config.useCopilot = true
+      }
+      else {
+        config.baseURL = baseURL.trim().replace(/\/$/, '')
+        const apiKey = await vscode.window.showInputBox({ prompt: 'Enter the API key of the language model', value: config.apiKey ?? undefined })
+        if (!apiKey)
+          return vscode.window.showInformationMessage('No API key provided')
+        config.apiKey = apiKey
+        const model = await vscode.window.showInputBox({ prompt: 'Enter the model of the language model', value: config.model ?? undefined, password: true })
+        if (!model)
+          return vscode.window.showInformationMessage('No model provided')
+        config.model = model
+      }
     }
-    else {
-      config.baseURL = baseURL.trim().replace(/\/$/, '')
-      const apiKey = await vscode.window.showInputBox({ prompt: 'Enter the API key of the language model', value: config.apiKey ?? undefined })
-      if (!apiKey)
-        return vscode.window.showInformationMessage('No API key provided')
-      config.apiKey = apiKey
-      const model = await vscode.window.showInputBox({ prompt: 'Enter the model of the language model', value: config.model ?? undefined, password: true })
-      if (!model)
-        return vscode.window.showInformationMessage('No model provided')
-      config.model = model
-    }
-  }
 
-  const activeTextEditor = vscode.window.activeTextEditor
-  if (!activeTextEditor)
-    return vscode.window.showInformationMessage('No active text editor')
-  const context = getContext(activeTextEditor)
-  if (!context)
-    vscode.window.showInformationMessage('No text available')
-  await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
-  if (config.useCopilot)
-    await vscode.window.withProgress({ title: 'Completing...', location: vscode.ProgressLocation.Notification }, async () => await giveMeAnswerCopilot(activeTextEditor, context))
-  else
-    await vscode.window.withProgress({ title: 'Completing...', location: vscode.ProgressLocation.Notification }, async () => await getAnswer(activeTextEditor, context))
-  await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
-}))
+    const activeTextEditor = vscode.window.activeTextEditor
+    if (!activeTextEditor)
+      return vscode.window.showInformationMessage('No active text editor')
+    const context = getContext(activeTextEditor)
+    if (!context)
+      vscode.window.showInformationMessage('No text available')
+    await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
+    if (config.useCopilot)
+      await vscode.window.withProgress({ title: 'Completing...', location: vscode.ProgressLocation.Notification }, async () => await giveMeAnswerCopilot(activeTextEditor, context))
+    else
+      await vscode.window.withProgress({ title: 'Completing...', location: vscode.ProgressLocation.Notification }, async () => await getAnswer(activeTextEditor, context))
+    await activeTextEditor.edit(edit => edit.insert(activeTextEditor.selection.active, '\n'))
+  })
+
+  useCommand('llm-complete-me.select-model', selectCopilotModel)
+})
 
 export { activate, deactivate }
+
+async function selectCopilotModel() {
+  const models = await vscode.lm.selectChatModels({ vendor: 'copilot' })
+  if (!models.length) {
+    vscode.window.showErrorMessage('No Copilot models available')
+    return null
+  }
+  const modelItems = models.map(m => ({ label: m.name, detail: m.id, model: m }))
+  const selectedItem = await vscode.window.showQuickPick(modelItems, { placeHolder: 'Select a model' })
+  if (selectedItem) {
+    config.selectedModel = selectedItem.model.id
+    return selectedItem.model
+  }
+  return null
+}
 
 function getContext(textEditor: vscode.TextEditor) {
   // if have selection, return selection
@@ -53,7 +72,20 @@ function getContext(textEditor: vscode.TextEditor) {
 // ref https://code.visualstudio.com/api/extension-guides/language-model#interpret-the-response
 async function giveMeAnswerCopilot(textEditor: vscode.TextEditor, q: string) {
   const startPosition = textEditor.selection.active
-  const [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: 'claude-3.5-sonnet' })
+
+  let model
+  if (config.selectedModel) {
+    const models = await vscode.lm.selectChatModels({ vendor: 'copilot' })
+    model = models.find(m => m.id === config.selectedModel)
+  }
+
+  if (!model) {
+    model = await selectCopilotModel()
+    if (!model) {
+      return vscode.window.showErrorMessage('No model selected')
+    }
+  }
+
   let chatResponse: vscode.LanguageModelChatResponse | undefined
   const messages = [vscode.LanguageModelChatMessage.User(q)]
   try {
