@@ -123,7 +123,23 @@ async function getAnswer(textEditor: vscode.TextEditor, context: string) {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
       method: 'POST',
     })
-    const content = (await res.json() as any)?.choices?.[0]?.message?.content
+
+    if (!res.ok) {
+      const errorData = await res.json()
+
+      // Simple check for model not supported error
+      if (res.status === 400 && errorData?.error?.message?.includes('Model is not supported')) {
+        await textEditor.edit(edit => edit.insert(
+          textEditor.selection.active,
+          `Error: Model "${config.model}" not supported. Run command "llm-complete-me.select-model" to select a different model.`,
+        ))
+        return
+      }
+
+      throw new Error(`Request failed: ${res.status} ${JSON.stringify(errorData)}`)
+    }
+
+    const content = (await res.json())?.choices?.[0]?.message?.content
     if (!content)
       return vscode.window.showInformationMessage('No response from the language model')
     await textEditor.edit(edit => edit.insert(textEditor.selection.active, content))
@@ -133,6 +149,6 @@ async function getAnswer(textEditor: vscode.TextEditor, context: string) {
     textEditor.selection = new vscode.Selection(startPosition, endPosition)
   }
   catch (err) {
-    return vscode.window.showInformationMessage((<Error>err).message)
+    await textEditor.edit(edit => edit.insert(textEditor.selection.active, `Error: ${(err as Error).message}`))
   }
 }
