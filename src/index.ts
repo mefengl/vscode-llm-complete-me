@@ -111,7 +111,7 @@ async function giveMeAnswerCopilot(textEditor: vscode.TextEditor, q: string) {
   }
   catch (err) {
     // async response stream may fail, e.g network interruption or server side error
-    await textEditor.edit(edit => edit.insert(textEditor.selection.active, (<Error>err).message))
+    await textEditor.edit(edit => edit.insert(textEditor.selection.active, (err as Error).message))
   }
 }
 
@@ -125,7 +125,7 @@ async function getAnswer(textEditor: vscode.TextEditor, context: string) {
     })
 
     if (!res.ok) {
-      const errorData = await res.json()
+      const errorData = await res.json() as { error?: { message?: string } }
 
       // Simple check for model not supported error
       if (res.status === 400 && errorData?.error?.message?.includes('Model is not supported')) {
@@ -139,7 +139,8 @@ async function getAnswer(textEditor: vscode.TextEditor, context: string) {
       throw new Error(`Request failed: ${res.status} ${JSON.stringify(errorData)}`)
     }
 
-    const content = (await res.json())?.choices?.[0]?.message?.content
+    const jsonResponse = await res.json() as { choices?: { message?: { content?: string } }[] }
+    const content = jsonResponse?.choices?.[0]?.message?.content
     if (!content)
       return vscode.window.showInformationMessage('No response from the language model')
     await textEditor.edit(edit => edit.insert(textEditor.selection.active, content))
