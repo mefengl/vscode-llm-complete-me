@@ -49,6 +49,10 @@
       {
         "command": "llm-complete-me.please",
         "title": "LLM Complete Me Please"
+      },
+      {
+        "command": "llm-complete-me.select-model",
+        "title": "LLM Complete Me: Select Copilot Model"
       }
     ],
     "keybindings": [
@@ -89,6 +93,14 @@
           "type": "boolean",
           "default": false,
           "description": "Use github copilot, recommend when having copilot subscription"
+        },
+        "llm-complete-me.selectedModel": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Selected Copilot model ID"
         }
       }
     }
